@@ -1,0 +1,27 @@
+<% if params[:action] == 'search' %>
+  <div class="results-block">
+    <%= bootstrap_flash %>
+  </div>
+<% end %>
+<% if @users %>
+  <% if @users.size > 0 %>
+    <div class="well results-block col-md-10">
+      <table class="col-lg-12">
+        <tbody>
+          <% @users.each do |user| %>
+            <tr>
+              <td><strong>Name: </strong> <%= user.full_name %></td>
+              <td><strong>Email: </strong> <%= user.email %></td>
+              <td><strong>Profile: </strong><%= link_to "View Profile", user_path(user), class: "btn btn-xs btn-success" %></td>
+              <td><% if current_user.not_friend_with(user)%>
+                  <%= link_to "Add friend", friendship_index_path(user: current_user, friend: user), method: :post, class: "btn btn-xs btn-success" %>
+                <% else %>
+                  <span class="label label-primary">You are already friend</span>
+                <% end %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+<% end %>

@@ -25,7 +25,25 @@ class User < ApplicationRecord
   end
 
   def full_name
-    return "#{first_name}  #{last_name}".strip if (first_name || last_name)
+    return "#{first_name} #{last_name}".strip if (first_name || last_name)
     "Anonymous"
+  end
+
+  def self.search(param)
+    param.strip!
+    param.downcase!
+    to_send_back = User.where('first_name LIKE ?', "%#{param}%")
+    .or(User.where('last_name LIKE ?', "%#{param}%"))
+    .or(User.where('email LIKE ?', "%#{param}%"))
+  end
+
+  def except_current_user(users)
+    users.reject {|user| user.id == self.id }
+  end
+
+
+  def not_friend_with(friend)
+    #debugger
+    friendships.where(friend_id: friend.id).count < 1
   end
 end
